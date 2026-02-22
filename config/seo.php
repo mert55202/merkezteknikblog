@@ -1,0 +1,18 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Site bilgileri (SEO, JSON-LD, sosyal paylaşım)
+    |--------------------------------------------------------------------------
+    */
+
+    'site_name' => env('SEO_SITE_NAME', 'Denizli Teknik'),
+    'default_description' => env('SEO_DEFAULT_DESCRIPTION', 'Denizli Teknik - Beyaz eşya, kombi ve klima servisi. Güvenilir ve hızlı hizmet.'),
+    'twitter_handle' => env('SEO_TWITTER_HANDLE', ''), // @kullaniciadi (boş bırakılabilir)
+    'facebook_app_id' => env('SEO_FACEBOOK_APP_ID', ''),
+    'default_image' => null, // null ise header logo kullanılır
+    'theme_color' => env('SEO_THEME_COLOR', '#1e3a5f'), // Mobil tarayıcı adres çubuğu rengi
+
+];

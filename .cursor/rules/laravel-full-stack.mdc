@@ -1,0 +1,55 @@
+---
+description: Laravel projelerinde bağlantılı tüm bileşenleri kontrol et ve işlemleri Docker üzerinde çalıştır
+alwaysApply: true
+---
+
+# Laravel Full-Stack Kuralları
+
+## 1. Bağlantılı Bileşenleri Kontrol Et
+
+Laravel kullanıldığında **her değişiklikte** aşağıdaki ilişkili yerleri kontrol et ve gerekiyorsa güncelle:
+
+| Değişiklik | Kontrol edilecekler |
+|------------|---------------------|
+| **Route** ekle/değiştir | `routes/web.php`, controller, view, layout menüleri, `route()` referansları, sitemap, feed |
+| **Model** ekle/değiştir | Migration, ilişkiler, controller, form request, view |
+| **Migration** ekle | Model, factory, seeder; Docker içinde `migrate` çalıştır |
+| **Controller** ekle/değiştir | Route, view path, model, redirect `route()` |
+| **View** ekle/değiştir | Controller, layout extend, `@include`, `route()` |
+| **Config** değiştir | Tüm kullanım yerleri (middleware, provider, view composer) |
+
+### Örnek kontrol zinciri
+- Yeni `admin.brands.index` route → `config/admin.php` permissions, layout menü, controller redirect'leri, view form action'ları
+- Yeni tablo → Migration, Model, pivot ilişkiler, tüm `route()` ve `model()` referansları
+- Blog → Servis dönüşümü → Route, Controller, Model, View, Feed, Sitemap, Layout, HomeController, Dashboard
+
+### Cache temizleme
+Değişiklik sonrası gerekirse: `route:clear`, `view:clear`, `config:clear`
+
+---
+
+## 2. Docker Kullanımı (Zorunlu)
+
+Bu proje **her zaman Docker** ile çalışır. Tüm Laravel/artisan komutlarını **Docker içinde** çalıştır:
+
+```bash
+# Migration
+docker compose exec web php artisan migrate --force
+
+# Cache temizleme
+docker compose exec web php artisan route:clear
+docker compose exec web php artisan view:clear
+docker compose exec web php artisan config:clear
+
+# Composer
+docker compose exec web composer install
+docker compose exec web composer dump-autoload
+
+# Route listesi
+docker compose exec web php artisan route:list
+
+# Genel artisan komutları
+docker compose exec web php artisan <komut>
+```
+
+**Yerel (host) `php artisan` kullanma** – veritabanı ve ortam Docker’da olduğu için sonuçlar tutarsız olur.

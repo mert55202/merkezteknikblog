@@ -1,0 +1,83 @@
+name: merkezteknikblog
+
+services:
+  web:
+    image: merkezteknikblog_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: merkezteknikblog_web
+    restart: unless-stopped
+    working_dir: /var/www/html
+    ports:
+      - "8000:80"
+    volumes:
+      # delegated = container tarafında okuma daha hızlı (Windows volume yavaşlığını azaltır)
+      - .:/var/www/html:delegated
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8000
+      - CACHE_STORE=array
+      - SESSION_DRIVER=file
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=merkezteknikblog
+      - DB_USERNAME=merkezteknikblog
+      - DB_PASSWORD=secret
+    networks:
+      - merkezteknikblog
+
+  mysql:
+    image: mysql:8.0
+    container_name: merkezteknikblog_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: merkezteknikblog
+      MYSQL_USER: merkezteknikblog
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - merkezteknikblog_mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - merkezteknikblog
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootsecret"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  phpmyadmin:
+    image: phpmyadmin:5.2-apache
+    profiles:
+      - phpmyadmin
+    container_name: merkezteknikblog_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: merkezteknikblog
+      PMA_PASSWORD: secret
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - merkezteknikblog
+
+networks:
+  merkezteknikblog:
+    driver: bridge
+
+volumes:
+  merkezteknikblog_mysql_data:
