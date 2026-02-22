@@ -8,8 +8,8 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'site_name' => env('SEO_SITE_NAME', 'Denizli Teknik'),
-    'default_description' => env('SEO_DEFAULT_DESCRIPTION', 'Denizli Teknik - Beyaz eşya, kombi ve klima servisi. Güvenilir ve hızlı hizmet.'),
+    'site_name' => env('SEO_SITE_NAME', 'Merkez Teknik Blog'),
+    'default_description' => env('SEO_DEFAULT_DESCRIPTION', 'Merkez Teknik Blog - Teknik blog ve rehberler.'),
     'twitter_handle' => env('SEO_TWITTER_HANDLE', ''), // @kullaniciadi (boş bırakılabilir)
     'facebook_app_id' => env('SEO_FACEBOOK_APP_ID', ''),
     'default_image' => null, // null ise header logo kullanılır
