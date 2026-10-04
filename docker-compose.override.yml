@@ -1,0 +1,14 @@
+services:
+  web:
+    ports: !override
+      - "8118:80"
+    environment:
+      - APP_URL=http://localhost:8118
+  mysql:
+    ports: !override
+      - "33118:3306"
+    mem_limit: 384m
+  phpmyadmin:
+    profiles: ["tools"]
+    ports:
+      - "9118:80"
